@@ -22,16 +22,21 @@ describe "Live API testing", remote: true do
   end
 
   describe "summoner" do
-    it "works by summoners name" do
-      name = "foo"
-      summoner = client.summoner.find_by_name(name)
-      expect(summoner.name).to eq(name)
+    let(:summoner_name) { "foo" }
+    it "find summoner by name" do
+      summoner = client.summoner.find_by_name(summoner_name)
+      expect(summoner.name).to eq(summoner_name)
     end
 
-    let(:summoner) { client.summoner.find_by_name("foo") }
+    let(:summoner) { client.summoner.find_by_name(summoner_name) }
 
-    it "works by summoners id" do
+    it "find summoner by id" do
       response = client.summoner.find(summoner.id)
+      expect(response.id).to eq(summoner.id)
+    end
+
+    it "find summoner by account id" do
+      response = client.summoner.find_by_account_id(summoner.account_id)
       expect(response.id).to eq(summoner.id)
     end
   end

@@ -30,8 +30,10 @@ module Lol
     # Get a summoner by account ID.
     # @param [Integer] account_id Account ID
     # @return [DynamicModel] Summoner representation
-    def find_by_account_id account_id
-      DynamicModel.new perform_request api_url "summoners/by-account/#{account_id}"
+    def find_by_account_id(account_id)
+      request_path = api_url ("summoners/by-account/#{account_id}")
+      response = perform_request(request_path)
+      DynamicModel.new(response)
     end
   end
 end
