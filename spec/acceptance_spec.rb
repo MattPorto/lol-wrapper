@@ -10,22 +10,18 @@ describe "Live API testing", :remote => true do
     end
   end
 
-  let(:api_key)  { ENV['RIOT_GAMES_API_KEY'] }
-  subject        { Lol::Client.new api_key }
+  let(:api_key)  { ENV['RIOT_GAMES_API_KEY'] } # FIXME: returns nil value
+  let(:client)   { Lol::Client.new api_key }
   let(:fallback) { Lol::Client.new ENV['RIOT_GAMES_NEW_KEY'] }
-
-  # @TODO: Maybe have aliases with singular / plural names so I can do subject.champions?
-  let (:champions) { subject.champion.get }
-  let (:intinig)   { subject.summoner.by_name("intinig").first }
-  let (:team)      { fallback.team.by_summoner(intinig.id).first }
 
   describe "champion" do
     it "works on the collection" do
-      expect {champions}.not_to raise_error
+      # FIXME: returns 401 without key and 403 with api key
+      expect { client.champion.all }.not_to raise_error
     end
 
     it "works on the single champion" do
-      expect {subject.champion.get(:id => champions.first.id)}.not_to raise_error
+      expect {client.champion.get(:id => champions.first.id)}.not_to raise_error
     end
   end
 
@@ -71,11 +67,5 @@ describe "Live API testing", :remote => true do
 
   describe "team" do
     pending
-  end
-
-  after(:all) do
-    VCR.configure do |c|
-      c.allow_http_connections_when_no_cassette = true
-    end
   end
 end

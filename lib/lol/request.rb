@@ -118,9 +118,9 @@ module Lol
     def perform_request url, verb = :get, body = nil, options = {}
       options_id = options.inspect
       can_cache = [:post, :put].include?(verb) ? false : cached?
-      if can_cache && result = store.get("#{clean_url(url)}#{options_id}")
-        return JSON.parse(result)
-      end
+      result = store.get("#{clean_url(url)}#{options_id}") if can_cache
+      return JSON.parse(result) if result
+
       response = perform_rate_limited_request(url, verb, body, options)
       store.setex "#{clean_url(url)}#{options_id}", ttl, response.to_json if can_cache
       response
