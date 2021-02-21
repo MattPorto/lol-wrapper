@@ -18,9 +18,11 @@ module Lol
     # Get a summoner by summoner name.
     # @param [String] name Summoner name
     # @return [DynamicModel] Summoner representation
-    def find_by_name name
+    def find_by_name(name)
       name = CGI.escape name.downcase.gsub(/\s/, '')
-      DynamicModel.new perform_request api_url "summoners/by-name/#{name}"
+      request_path = api_url("summoners/by-name/#{name}")
+      response = perform_request(request_path)
+      DynamicModel.new(response)
     end
 
     # Get a summoner by account ID.

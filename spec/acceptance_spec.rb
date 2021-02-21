@@ -13,11 +13,19 @@ describe "Live API testing", remote: true do
   # FIXME: returns nil value when uses environment variables
   let(:api_key)  { ENV['RIOT_GAMES_API_KEY'] || "RGAPI-48dea073-d582-4be4-9e94-faedffbb9e59" }
   let(:client)   { Lol::Client.new api_key }
-  let(:player) {  }
+  # let(:player) { client.summoner.by_name("foo").first }
 
   describe "stats" do
     it "works with platform data" do
       expect{ client.lol_status.platform_data }.not_to raise_error
+    end
+  end
+
+  describe "summoner" do
+    it "works by summoners name" do
+      name = "foo"
+      summoner = client.summoner.find_by_name(name)
+      expect(summoner.name).to eq(name)
     end
   end
 
@@ -62,10 +70,6 @@ describe "Live API testing", remote: true do
   end
 
   describe "matchhistory" do
-    pending
-  end
-
-  describe "summoner" do
     pending
   end
 
