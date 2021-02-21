@@ -27,6 +27,13 @@ describe "Live API testing", remote: true do
       summoner = client.summoner.find_by_name(name)
       expect(summoner.name).to eq(name)
     end
+
+    let(:summoner) { client.summoner.find_by_name("foo") }
+
+    it "works by summoners id" do
+      response = client.summoner.find(summoner.id)
+      expect(response.id).to eq(summoner.id)
+    end
   end
 
   describe "champion" do

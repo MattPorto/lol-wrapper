@@ -11,8 +11,10 @@ module Lol
     # Get a summoner by summoner ID.
     # @param [Integer] id Summoner ID
     # @return [DynamicModel] Summoner representation
-    def find id
-      DynamicModel.new perform_request api_url "summoners/#{id}"
+    def find(id)
+      request_path = api_url("summoners/#{id}")
+      response = perform_request(request_path)
+      DynamicModel.new(response)
     end
 
     # Get a summoner by summoner name.
