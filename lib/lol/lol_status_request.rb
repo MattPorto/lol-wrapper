@@ -13,5 +13,11 @@ module Lol
     def shard_data
       DynamicModel.new perform_request api_url "shard-data"
     end
+
+    # Get League of Legends status for the given platform
+    # @return [DynamicModel]
+    def platform_data
+      DynamicModel.new perform_request api_url "platform-data"
+    end
   end
 end
