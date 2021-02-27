@@ -10,8 +10,7 @@ describe "Live API testing", remote: true do
     end
   end
 
-  # FIXME: returns nil value when uses environment variables
-  let(:api_key)  { ENV['RIOT_GAMES_API_KEY'] || "RGAPI-48dea073-d582-4be4-9e94-faedffbb9e59" }
+  let!(:api_key)  { ENV['RIOT_GAMES_API_KEY'] }
   let(:client)   { Lol::Client.new api_key }
 
   describe "stats" do
