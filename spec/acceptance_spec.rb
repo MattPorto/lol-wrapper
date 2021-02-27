@@ -3,7 +3,7 @@ require "lol"
 require "awesome_print"
 
 # Requires connection
-describe "Live API testing", remote: true do
+describe "Live API", remote: true do
   before(:all) do
     VCR.configure do |c|
       c.allow_http_connections_when_no_cassette = true
@@ -14,8 +14,12 @@ describe "Live API testing", remote: true do
   let(:client)   { Lol::Client.new api_key }
 
   describe "stats" do
-    it "works with platform data" do
-      expect{ client.lol_status.platform_data }.not_to raise_error
+    it "platform data" do
+      stats_keys = %w[id name locales maintenances incidents]
+
+      result = client.lol_status.platform_data
+
+      expect(result.raw.keys).to eq(stats_keys)
     end
   end
 
