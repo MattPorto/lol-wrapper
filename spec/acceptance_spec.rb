@@ -49,8 +49,10 @@ describe "Live API", remote: true do
     end
   end
 
-  describe "champion" do
+  xdescribe "champion" do
     # FIXME: 403 with api key
+    # riot games does not support a championlist endpoint
+    # one solution is integrate with ddragon API (which runs away of the gem's purpose)
     it "works on the collection" do
       expect { client.champion.all }.not_to raise_error
     end
@@ -60,10 +62,39 @@ describe "Live API", remote: true do
     end
   end
 
-  describe "game" do
+  describe "matches" do
+    let(:summoner) { client.summoner.find_by_name('foo') }
 
-    it "works on recent games for a summoner" do
-      expect {fallback.game.recent intinig.id}.not_to raise_error
+    it "recent" do
+      account_id = summoner.account_id
+
+      result = client.match.recent(account_id)
+
+      expect(result['matches'].size).to eq(20)
+      expect(result['total_games']).to eq(20)
+    end
+
+    context 'all' do
+      it 'no filters' do
+        account_id = summoner.account_id
+
+        result = client.match.all(account_id)
+
+        # there's a bug on riot macthlist endpoint that returns wrong total games value
+        # fo sure I consider a error margin of 10 matches
+        expect(result['total_games']).to be_within(10).of(result['matches'].size)
+        expect(result['total_games']).not_to be_zero
+      end
+
+      it 'with filters' do
+        start_time = (Time.now - 1800).to_i
+        account_id = summoner.account_id
+        options = { beginTime: start_time }
+
+        result = client.match.all(account_id, options)
+
+        expect(result['total_games']).to be_within(10).of(result['matches'].size)
+      end
     end
   end
 
