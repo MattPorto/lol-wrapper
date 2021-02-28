@@ -24,22 +24,28 @@ describe "Live API", remote: true do
   end
 
   describe "summoner" do
-    let(:summoner_name) { "foo" }
-    it "find summoner by name" do
-      summoner = client.summoner.find_by_name(summoner_name)
-      expect(summoner.name).to eq(summoner_name)
+    it "find by name" do
+      name = 'foo'
+
+      result = client.summoner.find_by_name(name)
+
+      expect(result.name).to eq(name)
     end
 
-    let(:summoner) { client.summoner.find_by_name(summoner_name) }
+    it "find by id" do
+      summoner = client.summoner.find_by_name('foo')
 
-    it "find summoner by id" do
-      response = client.summoner.find(summoner.id)
-      expect(response.id).to eq(summoner.id)
+      result = client.summoner.find(summoner.id)
+
+      expect(result.id).to eq(summoner.id)
     end
 
-    it "find summoner by account id" do
-      response = client.summoner.find_by_account_id(summoner.account_id)
-      expect(response.id).to eq(summoner.id)
+    it "find by account id" do
+      summoner = client.summoner.find_by_name('foo')
+
+      result = client.summoner.find_by_account_id(summoner.account_id)
+
+      expect(result.id).to eq(summoner.id)
     end
   end
 
