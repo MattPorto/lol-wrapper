@@ -4,7 +4,7 @@ module Lol
   # See: https://developer.riotgames.com/api-methods/#league-v3
   class LeagueRequest < Request
 
-    # Get all the league entries
+    # Get all league entries
     # @param options [Hash]
     # @option options [String] :queue Queue identifier. See (developer.riotgames.com/game-constants.html)
     # @option options [String] :tier League Tier
@@ -17,20 +17,6 @@ module Lol
       request_handler(url)
     end
 
-    # Get the challenger league for a given queue
-    # @param [String] queue Queue identifier. See (developer.riotgames.com/game-constants.html)
-    # @return [DynamicModel] Challenger league
-    def find_challenger queue: 'RANKED_SOLO_5x5'
-      DynamicModel.new perform_request api_url "challengerleagues/by-queue/#{queue}"
-    end
-
-    # Get the master league for a given queue
-    # @param [String] queue Queue identifier. See the list of game constants (developer.riotgames.com/game-constants.html) for the available queue identifiers
-    # @return [DynamicModel] lMaster league
-    def find_master queue: 'RANKED_SOLO_5x5'
-      DynamicModel.new perform_request api_url "masterleagues/by-queue/#{queue}"
-    end
-
     # Get leagues in all queues for a given summoner ID
     # @param [Integer] summoner_id Encrypted summoner ID associated with the player
     # @return [Array<DynamicModel>] List of leagues summoner is participating in
@@ -39,12 +25,18 @@ module Lol
       request_handler(url)
     end
 
-    # Get league positions in all queues for a given summoner ID
-    # @param [Integer] encrypted_summoner_id Encrypted summoner ID associated with the player
-    # @return [Array<DynamicModel>] list of league positions
-    def summoner_positions encrypted_summoner_id:
-      result = perform_request api_url "positions/by-summoner/#{encrypted_summoner_id}"
-      result.map { |c| DynamicModel.new c }
+    # Get the challenger league for a given queue
+    # @param [String] queue Queue identifier. See (developer.riotgames.com/game-constants.html)
+    # @return [DynamicModel] Challenger league
+    def challengers(queue = default_queue)
+      DynamicModel.new perform_request api_url "challengerleagues/by-queue/#{queue}"
+    end
+
+    # Get the master league for a given queue
+    # @param [String] queue Queue identifier. See the list of game constants (developer.riotgames.com/game-constants.html) for the available queue identifiers
+    # @return [DynamicModel] lMaster league
+    def find_master queue: 'RANKED_SOLO_5x5'
+      DynamicModel.new perform_request api_url "masterleagues/by-queue/#{queue}"
     end
 
     private

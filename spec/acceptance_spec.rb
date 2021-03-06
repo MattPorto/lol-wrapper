@@ -99,20 +99,20 @@ describe "Live API", remote: true do
   end
 
   describe "league" do
-    let(:summoner) { client.summoner.find_by_name('foo') }
-
     it 'entries' do
       options = { queue: 'RANKED_SOLO_5x5', tier: 'SILVER', division: 'IV' }
       expect { client.league.entries(options) }.not_to raise_error
     end
 
+    it 'challengers' do
+      expect { client.league.challengers('RANKED_SOLO_5x5') }.not_to raise_error
+    end
+
     it "summoner leagues" do
+      summoner = client.summoner.find_by_name('foo')
       expect { client.league.summoner_leagues(summoner.id) }.not_to raise_error
     end
 
-    it "works with teams" do
-      expect {fallback.league.by_team team.id}.not_to raise_error
-    end
   end
 
   describe "lol-static-data" do
