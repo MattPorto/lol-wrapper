@@ -91,12 +91,16 @@ describe "Live API", remote: true do
       expect { client.league.entries(options) }.not_to raise_error
     end
 
-    it 'challengers' do
-      expect { client.league.challengers('RANKED_SOLO_5x5') }.not_to raise_error
-    end
-
     it 'masters' do
       expect { client.league.masters('RANKED_SOLO_5x5') }.not_to raise_error
+    end
+
+    it 'grandmasters' do
+      expect { client.league.grandmasters('RANKED_SOLO_5x5') }.not_to raise_error
+    end
+
+    it 'challengers' do
+      expect { client.league.challengers('RANKED_SOLO_5x5') }.not_to raise_error
     end
 
     it "summoner leagues" do
