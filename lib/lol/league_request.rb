@@ -1,7 +1,7 @@
 module Lol
   # Bindings for the League API.
   #
-  # See: https://developer.riotgames.com/api-methods/#league-v3
+  # See: https://developer.riotgames.com/api-methods/#league-v4
   class LeagueRequest < Request
 
     # Get all league entries
@@ -11,39 +11,50 @@ module Lol
     # @option options [String] :division League Division
     # @return [Array<DynamicModel>] List of League Summoners
     def entries(options = { queue: default_queue })
-      division = parsed_division(options[:division])
-      tier = parsed_tier(options[:tier])
-      url = api_url("entries/#{options[:queue]}/#{tier}/#{division}")
-      request_handler(url)
+      division = parsed_division options[:division]
+      tier = parsed_tier options[:tier]
+      url = api_url "entries/#{options[:queue]}/#{tier}/#{division}"
+      request_handler_for_collection url
     end
 
     # Get leagues in all queues for a given summoner ID
     # @param [Integer] summoner_id Encrypted summoner ID associated with the player
     # @return [Array<DynamicModel>] List of leagues summoner is participating in
     def summoner_leagues(summoner_id)
-      url = api_url("entries/by-summoner/#{summoner_id}")
-      request_handler(url)
+      url = api_url "entries/by-summoner/#{summoner_id}"
+      request_handler_for_collection url
     end
 
     # Get the challenger league for a given queue
     # @param [String] queue Queue identifier. See (developer.riotgames.com/game-constants.html)
     # @return [DynamicModel] Challenger league
     def challengers(queue = default_queue)
-      DynamicModel.new perform_request api_url "challengerleagues/by-queue/#{queue}"
+      queue_league 'challenger', queue
     end
 
     # Get the master league for a given queue
     # @param [String] queue Queue identifier. See the list of game constants (developer.riotgames.com/game-constants.html) for the available queue identifiers
     # @return [DynamicModel] lMaster league
-    def find_master queue: 'RANKED_SOLO_5x5'
-      DynamicModel.new perform_request api_url "masterleagues/by-queue/#{queue}"
+    def masters(queue = default_queue)
+      queue_league 'master', queue
     end
 
     private
 
-    def request_handler(url)
-      result = perform_request(url)
+    def request_handler_for_collection(url)
+      result = perform_request url
       result.map { |c| DynamicModel.new c }
+    end
+
+    def request_handler_for_object(url)
+      result = perform_request url
+      DynamicModel.new result
+    end
+
+    def queue_league(league, queue)
+      league_slug = league.eql?('master') ? 'masterleagues' : 'challengerleagues'
+      url = api_url "#{league_slug}/by-queue/#{queue}"
+      request_handler_for_object url
     end
 
     def api_base_path

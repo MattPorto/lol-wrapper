@@ -108,6 +108,10 @@ describe "Live API", remote: true do
       expect { client.league.challengers('RANKED_SOLO_5x5') }.not_to raise_error
     end
 
+    it 'masters' do
+      expect { client.league.masters('RANKED_SOLO_5x5') }.not_to raise_error
+    end
+
     it "summoner leagues" do
       summoner = client.summoner.find_by_name('foo')
       expect { client.league.summoner_leagues(summoner.id) }.not_to raise_error
