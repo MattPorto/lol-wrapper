@@ -99,8 +99,10 @@ describe "Live API", remote: true do
   end
 
   describe "league" do
-    it "works with get" do
-      expect {client.league.get intinig.id}.not_to raise_error
+    let(:summoner) { client.summoner.find_by_name('foo') }
+
+    it "summoner leagues" do
+      expect { client.league.summoner_leagues(summoner.id) }.not_to raise_error
     end
 
     it "works with entries" do
