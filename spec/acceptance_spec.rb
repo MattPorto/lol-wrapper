@@ -24,7 +24,7 @@ describe "Live API", remote: true do
   end
 
   describe "summoner" do
-    it "find by name" do
+    it "by name" do
       name = 'foo'
 
       result = client.summoner.find_by_name(name)
@@ -32,7 +32,7 @@ describe "Live API", remote: true do
       expect(result.name).to eq(name)
     end
 
-    it "find by id" do
+    it "by id" do
       summoner = client.summoner.find_by_name('foo')
 
       result = client.summoner.find(summoner.id)
@@ -40,25 +40,12 @@ describe "Live API", remote: true do
       expect(result.id).to eq(summoner.id)
     end
 
-    it "find by account id" do
+    it "by account id" do
       summoner = client.summoner.find_by_name('foo')
 
       result = client.summoner.find_by_account_id(summoner.account_id)
 
       expect(result.id).to eq(summoner.id)
-    end
-  end
-
-  xdescribe "champion" do
-    # FIXME: 403 with api key
-    # riot games does not support a championlist endpoint
-    # one solution is integrate with ddragon API (which runs away of the gem's purpose)
-    it "works on the collection" do
-      expect { client.champion.all }.not_to raise_error
-    end
-
-    it "works on the single champion" do
-      expect {client.champion.get(:id => champions.first.id)}.not_to raise_error
     end
   end
 
@@ -119,19 +106,34 @@ describe "Live API", remote: true do
 
   end
 
-  describe "lol-static-data" do
-    pending
-  end
-
   describe "match" do
     pending
   end
 
-  describe "matchhistory" do
+  describe "match history" do
     pending
   end
 
-  describe "team" do
+  # maybe in next release
+
+  describe "clash" do
+    pending
+  end
+
+  xdescribe "champion" do
+    # FIXME: 403 with api key
+    # riot games does not support a championlist endpoint
+    # one solution is integrate with ddragon API (which runs away of the gem's purpose)
+    it "works on the collection" do
+      expect { client.champion.all }.not_to raise_error
+    end
+
+    it "works on the single champion" do
+      expect {client.champion.get(:id => champions.first.id)}.not_to raise_error
+    end
+  end
+
+  describe "lol-static-data" do
     pending
   end
 end
