@@ -3,12 +3,14 @@ module Lol
   #
   # See: https://developer.riotgames.com/api-methods/#league-v3
   class LeagueRequest < Request
+
     # Get all the league entries
     # @param options [Hash]
-    # @option options [String] :queue Queue identifier. See the list of game constants (developer.riotgames.com/game-constants.html) for the available queue identifiers
-    # @option options [String] :tier League tier
-    # @option options [String] :division League division
-    def entries(options = {})
+    # @option options [String] :queue Queue identifier. See (developer.riotgames.com/game-constants.html)
+    # @option options [String] :tier League Tier
+    # @option options [String] :division League Division
+    # @return [Array<DynamicModel>] List of League Summoners
+    def entries(options = { queue: default_queue })
       division = parsed_division(options[:division])
       tier = parsed_tier(options[:tier])
       url = api_url("entries/#{options[:queue]}/#{tier}/#{division}")
@@ -16,7 +18,7 @@ module Lol
     end
 
     # Get the challenger league for a given queue
-    # @param [String] queue Queue identifier. See the list of game constants (developer.riotgames.com/game-constants.html) for the available queue identifiers
+    # @param [String] queue Queue identifier. See (developer.riotgames.com/game-constants.html)
     # @return [DynamicModel] Challenger league
     def find_challenger queue: 'RANKED_SOLO_5x5'
       DynamicModel.new perform_request api_url "challengerleagues/by-queue/#{queue}"
@@ -66,7 +68,7 @@ module Lol
       when '2' then 'II'
       when '3' then 'III'
       when '4' then 'IV'
-      else ''
+      else division.to_s
       end
     end
 

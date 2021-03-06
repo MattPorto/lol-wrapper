@@ -102,20 +102,12 @@ describe "Live API", remote: true do
     let(:summoner) { client.summoner.find_by_name('foo') }
 
     it 'entries' do
-      options = {
-        queue: 'RANKED_SOLO_5x5',
-        tier: 'silver',
-        division: '4'
-      }
+      options = { queue: 'RANKED_SOLO_5x5', tier: 'SILVER', division: 'IV' }
       expect { client.league.entries(options) }.not_to raise_error
     end
 
     it "summoner leagues" do
       expect { client.league.summoner_leagues(summoner.id) }.not_to raise_error
-    end
-
-    it "works with entries" do
-      expect {fallback.league.get_entries intinig.id}.not_to raise_error
     end
 
     it "works with teams" do
