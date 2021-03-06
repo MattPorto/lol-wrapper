@@ -1,6 +1,22 @@
 module Lol
   class Client
 
+    # Initializes a Lol::Client
+    # @param api_key [String]
+    # @param options [Hash]
+    # @option options [String] :region ("BR") The region on which the requests will be made
+    # @option options [String] :redis the redis url to use for caching
+    # @option options [Integer] :ttl (900) the cache ttl
+    # @option options [Fixnum] :rate_limit_requests number of requests
+    # @option options [Fixnum] :rate_limit_seconds number of seconds to limit the rate in
+    # @return [Lol::Client]
+    def initialize api_key, options = {}
+      @api_key = api_key
+      @region = options.delete(:region) || "br"
+      set_up_cache(options.delete(:redis), options.delete(:ttl))
+      set_up_rate_limiter(options.delete(:rate_limit_requests), options.delete(:rate_limit_seconds))
+    end
+
     # @!attribute [rw] region
     # @return [String] name of region
     attr_accessor :region
@@ -82,22 +98,7 @@ module Lol
       @tournament ||= TournamentRequest.new(api_key, region, cache_store, rate_limiter)
     end
 
-    # Initializes a Lol::Client
-    # @param api_key [String]
-    # @param options [Hash]
-    # @option options [String] :region ("EUW") The region on which the requests will be made
-    # @option options [String] :redis the redis url to use for caching
-    # @option options [Integer] :ttl (900) the cache ttl
-    # @option options [Fixnum] :rate_limit_requests number of requests
-    # @option options [Fixnum] :rate_limit_seconds number of seconds to limit the rate in
-    # @return [Lol::Client]
-    def initialize api_key, options = {}
-      @api_key = api_key
-      @region = options.delete(:region) || "euw"
-      set_up_cache(options.delete(:redis), options.delete(:ttl))
-      set_up_rate_limiter(options.delete(:rate_limit_requests), options.delete(:rate_limit_seconds))
-    end
-
+    private
     def set_up_cache(redis_url, ttl)
       return @cached = false unless redis_url
 

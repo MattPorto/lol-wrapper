@@ -8,10 +8,10 @@ module Lol
       "/lol/status/#{self.class.api_version}"
     end
 
-    # Get League of Legends status for the given shard
+    # Get League of Legends status for the given platform
     # @return [DynamicModel]
-    def shard_data
-      DynamicModel.new perform_request api_url "shard-data"
+    def platform_data
+      DynamicModel.new perform_request api_url "platform-data"
     end
   end
 end

@@ -7,7 +7,7 @@ module Lol
     # @return [Integer]
     attr_reader :client_refresh_interval
 
-    def initialize data
+    def initialize(data)
       @client_refresh_interval = data['clientRefreshInterval']
       super data['gameList'].map { |g| DynamicModel.new g }
     end
