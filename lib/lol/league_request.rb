@@ -46,6 +46,14 @@ module Lol
       queue_league 'challenger', queue
     end
 
+    # Get league with given ID, including inactive entries
+    # @param [Integer] league_id The UUID of the league
+    # @return [DynamicModel] League Representation
+    def by_id(league_id)
+      url = api_url "leagues/#{league_id}"
+      request_handler_for_object url
+    end
+
     private
 
     def request_handler_for_collection(url)

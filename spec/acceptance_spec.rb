@@ -108,6 +108,11 @@ describe "Live API", remote: true do
       expect { client.league.summoner_leagues(summoner.id) }.not_to raise_error
     end
 
+    it 'league by id' do
+      master_league = client.league.masters
+      expect { client.league.by_id(master_league.league_id) }.not_to raise_error
+    end
+
   end
 
   describe "match" do
