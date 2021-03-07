@@ -1,21 +1,21 @@
-require "spec_helper"
-require "lol"
+require 'spec_helper'
+require 'lol'
 include Lol
 
 describe ChampionMasteryRequest do
-  subject { ChampionMasteryRequest.new("api_key", "euw") }
+  subject { ChampionMasteryRequest.new('api_key', 'euw') }
   let(:dummy_encrypted_summoner_id) { 'qHn0uNkpA1T-NqQ0zHTEqNh1BhH5SAsGWwkZsacbeKBqSdkUEaYOcYNjDomm60vMrLWHu4ulYg1C5Q' }
 
-  it "inherits from Request" do
+  it 'check inherit' do
     expect(ChampionMasteryRequest.ancestors[1]).to eq Request
   end
 
-  it "#total_score" do
+  it 'total score' do
     stub_request_raw subject, 60, "scores/by-summoner/#{dummy_encrypted_summoner_id}"
     expect(subject.total_score dummy_encrypted_summoner_id).to eq 60
   end
 
-  it "#find" do
+  it 'find' do
     url = "champion-masteries/by-summoner/#{dummy_encrypted_summoner_id}/by-champion/40"
     stub_request subject, 'champion-mastery', url
 
@@ -33,18 +33,15 @@ describe ChampionMasteryRequest do
     expect(result.champion_points_since_last_level).to eq 12756
   end
 
-  describe "#all" do
-    before { stub_request(subject, 'champion-masteries', "champion-masteries/by-summoner/#{dummy_encrypted_summoner_id}") }
-    let(:result) { subject.all encrypted_summoner_id: dummy_encrypted_summoner_id }
+  it 'all' do
+    fixture = load_fixture('champion-masteries', described_class.api_version)
+    url = "champion-masteries/by-summoner/#{dummy_encrypted_summoner_id}"
+    stub_request subject, 'champion-masteries', url
 
-    it "returns an Array of ChampionMastery" do
-      expect(result).to be_a Array
-      expect(result.map(&:class).uniq).to eq [DynamicModel]
-    end
+    result = subject.all dummy_encrypted_summoner_id
 
-    it "fetches ChampionMastery properties from the API" do
-      fixture = load_fixture('champion-masteries', described_class.api_version)
-      expect(result.count).to eq fixture.count
-    end
+    expect(result).to be_a Array
+    expect(result.map(&:class).uniq).to eq [DynamicModel]
+    expect(result.count).to eq fixture.count
   end
 end

@@ -3,16 +3,12 @@ module Lol
   #
   # See: https://developer.riotgames.com/api-methods/#champion-mastery-v4
   class ChampionMasteryRequest < Request
-    # @!visibility private
-    def api_base_path
-      "/lol/champion-mastery/#{api_version}"
-    end
 
     # Get a player's total champion mastery score, which is the sum of individual champion mastery levels
     #
     # See: https://developer.riotgames.com/api-methods/#champion-mastery-v4/GET_getDynamicModelScore
     # @param [Integer] summoner_id Summoner ID associated with the player
-    # @return [Integer] Player's total champion master score
+    # @return [String] Player's total champion master score
     def total_score(summoner_id)
       url = api_url "scores/by-summoner/#{summoner_id}"
       perform_request url
@@ -23,8 +19,9 @@ module Lol
     # See: https://developer.riotgames.com/api-methods/#champion-mastery-v4/GET_getAllChampionMasteries
     # @param [Integer] summoner_id Summoner ID associated with the player
     # @return [Array<Lol::DynamicModel>] Champion Masteries
-    def all encrypted_summoner_id:
-      result = perform_request api_url "champion-masteries/by-summoner/#{encrypted_summoner_id}"
+    def all(summoner_id)
+      url = api_url "champion-masteries/by-summoner/#{summoner_id}"
+      result = perform_request url
       result.map { |c| DynamicModel.new c }
     end
 
@@ -37,6 +34,12 @@ module Lol
       url = api_url "champion-masteries/by-summoner/#{summoner_id}/by-champion/#{champion_id}"
       result = perform_request url
       DynamicModel.new result
+    end
+
+    private
+
+    def api_base_path
+      "/lol/champion-mastery/#{api_version}"
     end
   end
 end
