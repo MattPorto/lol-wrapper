@@ -11,9 +11,10 @@ describe "Live API", remote: true do
   end
 
   let!(:api_key)  { ENV['RIOT_GAMES_API_KEY'] }
-  let(:client)   { Lol::Client.new api_key }
+  let!(:client)   { Lol::Client.new api_key }
+  let!(:summoner) { client.summoner.find_by_name('foo') }
 
-  describe "stats" do
+  context "stats" do
     it "platform data" do
       stats_keys = %w[id name locales maintenances incidents]
 
@@ -23,69 +24,59 @@ describe "Live API", remote: true do
     end
   end
 
-  describe "summoner" do
+  context "champion mastery" do
+    it 'all' do
+      expect { client.champion_mastery.all summoner.id }.not_to raise_error
+    end
+
+    it 'find' do
+      expect { client.champion_mastery.find(40, summoner.id) }.not_to raise_error
+    end
+
+    it 'total score' do
+      expect { client.champion_mastery.total_score summoner.id }.not_to raise_error
+    end
+
+  end
+
+  context "champion" do
+    pending "rotation"
+  end
+
+  context "summoner" do
     it "by name" do
-      name = 'foo'
-
-      result = client.summoner.find_by_name(name)
-
-      expect(result.name).to eq(name)
+      expect { client.summoner.find_by_name(summoner.name) }.not_to raise_error
     end
 
     it "by id" do
-      summoner = client.summoner.find_by_name('foo')
-
-      result = client.summoner.find(summoner.id)
-
-      expect(result.id).to eq(summoner.id)
+      expect { client.summoner.find(summoner.id) }.not_to raise_error
     end
 
     it "by account id" do
-      summoner = client.summoner.find_by_name('foo')
-
-      result = client.summoner.find_by_account_id(summoner.account_id)
-
-      expect(result.id).to eq(summoner.id)
+      expect { client.summoner.find_by_account_id(summoner.account_id) }.not_to raise_error
     end
   end
 
-  describe "matches" do
+  context "matches" do
     let(:summoner) { client.summoner.find_by_name('foo') }
 
     it "recent" do
-      account_id = summoner.account_id
-
-      result = client.match.recent(account_id)
-
-      expect(result['matches'].size).to eq(20)
-      expect(result['total_games']).to eq(20)
+      expect { client.match.recent(summoner.account_id) }.not_to raise_error
     end
 
     context 'all' do
       it 'no filters' do
-        account_id = summoner.account_id
-
-        result = client.match.all(account_id)
-
-        # there's a bug on riot macthlist endpoint that returns wrong total games value
-        # fo sure I consider a error margin of 10 matches
-        expect(result['total_games']).to be_within(10).of(result['matches'].size)
-        expect(result['total_games']).not_to be_zero
+        expect { client.match.all(summoner.account_id) }.not_to raise_error
       end
 
       it 'with filters' do
-        start_time = (Time.now - 1800).to_i
-        account_id = summoner.account_id
-        options = { beginTime: start_time }
-
-        result = client.match.all(account_id, options)
-
-        expect(result['total_games']).to be_within(10).of(result['matches'].size)
+        options = { beginTime: (Time.now - 1800).to_i }
+        expect { client.match.all(summoner.account_id, options) }.not_to raise_error
       end
     end
   end
 
-  describe "league" do
+  context "league" do
     it 'entries' do
       options = { queue: 'RANKED_SOLO_5x5', tier: 'SILVER', division: 'IV' }
       expect { client.league.entries(options) }.not_to raise_error
@@ -115,34 +106,28 @@ describe "Live API", remote: true do
 
   end
 
-  describe "match" do
-    pending
-  end
-
-  describe "match history" do
-    pending
-  end
-
   # maybe in next release
 
-  describe "clash" do
+  context "clash" do
     pending
   end
 
-  xdescribe "champion" do
-    # FIXME: 403 with api key
-    # riot games does not support a championlist endpoint
-    # one solution is integrate with ddragon API (which runs away of the gem's purpose)
-    it "works on the collection" do
-      expect { client.champion.all }.not_to raise_error
-    end
-
-    it "works on the single champion" do
-      expect {client.champion.get(:id => champions.first.id)}.not_to raise_error
-    end
+  context "tournament" do
+    pending
   end
 
-  describe "lol-static-data" do
-    pending
+  xcontext "lol-static-data" do
+    xcontext "champions" do
+      # FIXME: 403 with api key
+      # riot games does not support a championlist endpoint
+      # one solution is integrate with ddragon API (which runs away of the gem's purpose)
+      it "works on the collection" do
+        expect { client.champion.all }.not_to raise_error
+      end
+
+      it "works on the single champion" do
+        expect {client.champion.get(:id => champions.first.id)}.not_to raise_error
+      end
+    end
   end
 end
