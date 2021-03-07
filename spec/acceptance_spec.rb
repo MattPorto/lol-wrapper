@@ -11,7 +11,8 @@ describe "Live API", remote: true do
   end
 
   let!(:api_key)  { ENV['RIOT_GAMES_API_KEY'] }
-  let(:client)   { Lol::Client.new api_key }
+  let!(:client)   { Lol::Client.new api_key }
+  let!(:summoner) { client.summoner.find_by_name('foo') }
 
   context "stats" do
     it "platform data" do
@@ -24,36 +25,35 @@ describe "Live API", remote: true do
   end
 
   context "champion mastery" do
-    pending
+    it 'all' do
+      expect { client.champion_mastery.all summoner.id }.not_to raise_error
+    end
+
+    it 'find' do
+      expect { client.champion_mastery.find(40, summoner.id) }.not_to raise_error
+    end
+
+    it 'total score' do
+      expect { client.champion_mastery.total_score summoner.id }.not_to raise_error
+    end
+
   end
 
   context "champion" do
-      pending "rotation"
+    pending "rotation"
   end
 
   context "summoner" do
     it "by name" do
-      name = 'foo'
-
-      result = client.summoner.find_by_name(name)
-
-      expect(result.name).to eq(name)
+      expect { client.summoner.find_by_name(summoner.name) }.not_to raise_error
     end
 
     it "by id" do
-      summoner = client.summoner.find_by_name('foo')
-
-      result = client.summoner.find(summoner.id)
-
-      expect(result.id).to eq(summoner.id)
+      expect { client.summoner.find(summoner.id) }.not_to raise_error
     end
 
     it "by account id" do
-      summoner = client.summoner.find_by_name('foo')
-
-      result = client.summoner.find_by_account_id(summoner.account_id)
-
-      expect(result.id).to eq(summoner.id)
+      expect { client.summoner.find_by_account_id(summoner.account_id) }.not_to raise_error
     end
   end
 
@@ -61,34 +61,17 @@ describe "Live API", remote: true do
     let(:summoner) { client.summoner.find_by_name('foo') }
 
     it "recent" do
-      account_id = summoner.account_id
-
-      result = client.match.recent(account_id)
-
-      expect(result['matches'].size).to eq(20)
-      expect(result['total_games']).to eq(20)
+      expect { client.match.recent(summoner.account_id) }.not_to raise_error
     end
 
     context 'all' do
       it 'no filters' do
-        account_id = summoner.account_id
-
-        result = client.match.all(account_id)
-
-        # there's a bug on riot macthlist endpoint that returns wrong total games value
-        # fo sure I consider a error margin of 10 matches
-        expect(result['total_games']).to be_within(10).of(result['matches'].size)
-        expect(result['total_games']).not_to be_zero
+        expect { client.match.all(summoner.account_id) }.not_to raise_error
       end
 
       it 'with filters' do
-        start_time = (Time.now - 1800).to_i
-        account_id = summoner.account_id
-        options = { beginTime: start_time }
-
-        result = client.match.all(account_id, options)
-
-        expect(result['total_games']).to be_within(10).of(result['matches'].size)
+        options = { beginTime: (Time.now - 1800).to_i }
+        expect { client.match.all(summoner.account_id, options) }.not_to raise_error
       end
     end
   end
