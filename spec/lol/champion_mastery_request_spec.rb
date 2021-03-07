@@ -10,32 +10,27 @@ describe ChampionMasteryRequest do
     expect(ChampionMasteryRequest.ancestors[1]).to eq Request
   end
 
-  describe "#total_score" do
-    it "returns the total score" do
-      stub_request_raw subject, 60, "scores/by-summoner/#{dummy_encrypted_summoner_id}"
-      expect(subject.total_score encrypted_summoner_id: dummy_encrypted_summoner_id).to eq 60
-    end
+  it "#total_score" do
+    stub_request_raw subject, 60, "scores/by-summoner/#{dummy_encrypted_summoner_id}"
+    expect(subject.total_score dummy_encrypted_summoner_id).to eq 60
   end
 
-  describe "#find" do
-    it "returns a ChampionMastery" do
-      stub_request(subject, 'champion-mastery', "champion-masteries/by-summoner/#{dummy_encrypted_summoner_id}/by-champion/40")
-      expect(subject.find 40, encrypted_summoner_id: dummy_encrypted_summoner_id).to be_a DynamicModel
-    end
+  it "#find" do
+    url = "champion-masteries/by-summoner/#{dummy_encrypted_summoner_id}/by-champion/40"
+    stub_request subject, 'champion-mastery', url
 
-    it "fetches ChampionMastery from the API" do
-      stub_request(subject, 'champion-mastery', "champion-masteries/by-summoner/#{dummy_encrypted_summoner_id}/by-champion/40")
-      result = subject.find 40, encrypted_summoner_id: dummy_encrypted_summoner_id
-      expect(result.highest_grade).to eq('S+')
-      expect(result.champion_points).to eq(34356)
-      expect(result.summoner_id).to eq(1)
-      expect(result.champion_points_until_next_level).to eq(0)
-      expect(result.chest_granted).to be(true)
-      expect(result.champion_level).to eq(5)
-      expect(result.tokens_earned).to eq(2)
-      expect(result.champion_id).to eq(40)
-      expect(result.champion_points_since_last_level).to eq(12756)
-    end
+    result = subject.find 40, dummy_encrypted_summoner_id
+
+    expect(result).to be_a DynamicModel
+    expect(result.highest_grade).to eq 'S+'
+    expect(result.champion_points).to eq 34356
+    expect(result.summoner_id).to eq 1
+    expect(result.champion_points_until_next_level).to be_zero
+    expect(result.chest_granted).to be_truthy
+    expect(result.champion_level).to eq 5
+    expect(result.tokens_earned).to eq 2
+    expect(result.champion_id).to eq 40
+    expect(result.champion_points_since_last_level).to eq 12756
   end
 
   describe "#all" do

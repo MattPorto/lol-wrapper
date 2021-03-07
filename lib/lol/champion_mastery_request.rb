@@ -13,8 +13,9 @@ module Lol
     # See: https://developer.riotgames.com/api-methods/#champion-mastery-v4/GET_getDynamicModelScore
     # @param [Integer] summoner_id Summoner ID associated with the player
     # @return [Integer] Player's total champion master score
-    def total_score encrypted_summoner_id:
-      perform_request api_url "scores/by-summoner/#{encrypted_summoner_id}"
+    def total_score(summoner_id)
+      url = api_url "scores/by-summoner/#{summoner_id}"
+      perform_request url
     end
 
     # Get all champion mastery entries sorted by number of champion points descending
@@ -32,8 +33,9 @@ module Lol
     # See: https://developer.riotgames.com/api-methods/#champion-mastery-v4/GET_getDynamicModel
     # @param [Integer] summoner_id Summoner ID associated with the player
     # @return [Lol::DynamicModel] Champion Mastery
-    def find champion_id, encrypted_summoner_id:
-      result = perform_request api_url "champion-masteries/by-summoner/#{encrypted_summoner_id}/by-champion/#{champion_id}"
+    def find(champion_id, summoner_id)
+      url = api_url "champion-masteries/by-summoner/#{summoner_id}/by-champion/#{champion_id}"
+      result = perform_request url
       DynamicModel.new result
     end
   end
