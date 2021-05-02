@@ -10,12 +10,12 @@ describe LolStatusRequest do
     expect(LolStatusRequest).to be < Request
   end
 
-  describe '#shard_data' do
-    let(:response) { subject.shard_data }
+  describe '#platform_data' do
+    let(:response) { subject.platform_data }
 
-    before(:each) { stub_request(subject, 'lol-status-shard', 'shard-data') }
+    before(:each) { stub_request(subject, 'lol-status-platform', 'platform-data') }
 
-    it 'returns a Shard' do
+    it 'returns status' do
       expect(response).to be_a(DynamicModel)
     end
 
@@ -23,5 +23,4 @@ describe LolStatusRequest do
       expect(response.services.map(&:class).uniq).to eq([DynamicModel])
     end
   end
-
 end
