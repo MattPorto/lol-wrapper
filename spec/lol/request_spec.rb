@@ -155,7 +155,7 @@ describe Request do
     end
 
     context 'with rate limits' do
-      let(:rate_limiter) { Lol::Client.new('api_key').set_up_rate_limiter(1, 20) }
+      let(:rate_limiter) { Lol::Client.new('api_key').send(:set_up_rate_limiter, 1, 20) }
       before { stub_request subject, 'champion-all', 'champions' }
 
       it 'uses rate limiter' do
