@@ -1,4 +1,6 @@
 module Helpers
+  # ToDo: remove expectations from helpers
+
   def underscore(s)
     s.to_s.scan(/[A-Z][a-z]*/).join("_").downcase
   end
