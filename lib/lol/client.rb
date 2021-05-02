@@ -58,11 +58,6 @@ module Lol
       @runes_request ||= RunesRequest.new(api_key, region, cache_store, rate_limiter)
     end
 
-    # @return [MasteriesRequest]
-    def masteries
-      @masteries_request ||= MasteriesRequest.new(api_key, region, cache_store, rate_limiter)
-    end
-
     # @return [SpectatorRequest]
     def spectator
       @spectator_request ||= SpectatorRequest.new(api_key, region, cache_store, rate_limiter)

@@ -6,7 +6,7 @@ module Lol
     # Returns the supported API Version.
     # @return [String] v3
     def self.api_version
-      "v3"
+      "v4"
     end
 
     # Retrieve all champions

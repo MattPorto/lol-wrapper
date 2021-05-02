@@ -14,41 +14,41 @@ describe LeagueRequest do
   describe '#find_challenger' do
     it 'returns a DynamicModel' do
       stub_request subject, 'league-challenger', 'challengerleagues/by-queue/RANKED_SOLO_5x5'
-      expect(subject.find_challenger).to be_a DynamicModel
+      expect(subject.challengers).to be_a DynamicModel
     end
 
     it 'finds the challenger league for the given queue' do
       stub_request subject, 'league-challenger', 'challengerleagues/by-queue/foo'
-      subject.find_challenger queue: 'foo'
+      subject.challengers 'foo'
     end
   end
 
   describe '#find_master' do
     it 'returns a LeagueList' do
       stub_request subject, 'league-master', 'masterleagues/by-queue/RANKED_SOLO_5x5'
-      expect(subject.find_master).to be_a DynamicModel
+      expect(subject.masters).to be_a DynamicModel
     end
 
     it 'finds the master league for the given queue' do
       stub_request subject, 'league-master', 'masterleagues/by-queue/foo'
-      subject.find_master queue: 'foo'
+      subject.masters 'foo'
     end
   end
 
-  # FIXME: I can't find this API neither in v3 nor in v4 :(
   describe '#summoner_leagues' do
     it 'returns an array of LeagueList objects' do
-      stub_request subject, 'league-summoner', "leagues/by-summoner/#{dummy_encrypted_summoner_id}"
-      result = subject.summoner_leagues encrypted_summoner_id: dummy_encrypted_summoner_id
+      stub_request subject, 'league-summoner', "entries/by-summoner/#{dummy_encrypted_summoner_id}"
+      result = subject.summoner_leagues dummy_encrypted_summoner_id
       expect(result).to be_a Array
       expect(result.map(&:class).uniq).to eq [DynamicModel]
     end
   end
 
-  describe '#summoner_positions' do
+  # FIXME: I can't find this API neither in v3 nor in v4 :(
+  xdescribe '#summoner_positions' do
     it 'returns an array of DynamicModel objects' do
       stub_request subject, 'league-positions', "positions/by-summoner/#{dummy_encrypted_summoner_id}"
-      result = subject.summoner_positions encrypted_summoner_id: dummy_encrypted_summoner_id
+      result = subject.summoner_leagues dummy_encrypted_summoner_id
       expect(result).to be_a Array
       expect(result.map(&:class).uniq).to eq [DynamicModel]
     end

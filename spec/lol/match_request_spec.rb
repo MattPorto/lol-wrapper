@@ -13,7 +13,7 @@ describe MatchRequest do
   describe "#find" do
     it "returns a DynamicModel" do
       stub_request subject, 'match', "matches/1"
-      expect(subject.find match_id: 1).to be_a DynamicModel
+      expect(subject.find 1).to be_a DynamicModel
     end
   end
 
@@ -43,14 +43,14 @@ describe MatchRequest do
   describe "#all" do
     it "returns a DynamicModel" do
       stub_request subject, 'matches', "matchlists/by-account/1"
-      expect(subject.all account_id: 1).to be_a DynamicModel
+      expect(subject.all 1).to be_a DynamicModel
     end
   end
 
   describe "#recent" do
     it "returns a DynamicModel" do
-      stub_request subject, 'matches-recent', "matchlists/by-account/1/recent"
-      expect(subject.recent account_id: 1).to be_a DynamicModel
+      stub_request subject, 'matches-recent', "matchlists/by-account/1"
+      expect(subject.recent 1).to be_a DynamicModel
     end
   end
 end
