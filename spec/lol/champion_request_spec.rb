@@ -11,7 +11,7 @@ describe ChampionRequest do
   end
 
   it "still has only the v3" do
-    expect(described_class.api_version).to eq('v3')
+    expect(described_class.api_version).to eq('v4')
   end
 
   describe "#find" do
