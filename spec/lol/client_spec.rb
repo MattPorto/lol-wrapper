@@ -119,18 +119,6 @@ describe Client do
     end
   end
 
-  describe '#masteries' do
-    it "returns an instance of MasteriesRequest" do
-      expect(subject.masteries).to be_a(MasteriesRequest)
-    end
-
-    it "initializes the MasteriesRequest with the current API key and region" do
-      expect(MasteriesRequest).to receive(:new).with(*new_instance_args)
-
-      subject.masteries
-    end
-  end
-
   describe "#league" do
     it "returns an instance of LeagueRequest" do
       expect(subject.league).to be_a(LeagueRequest)
