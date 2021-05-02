@@ -12,7 +12,7 @@ describe StaticRequest do
     "mastery"        => "masteries",
     "rune"           => "runes",
     "summoner_spell" => "summoner_spells"
-  }.each do |old_edpoint, new_endpoint|
+  }.each do |_old_edpoint, new_endpoint|
     describe "##{new_endpoint}" do
       it "returns a Proxy" do
         expect(subject.send(new_endpoint).class).to eq(StaticRequest::Proxy)
