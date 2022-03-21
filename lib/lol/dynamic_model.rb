@@ -8,16 +8,17 @@ module Lol
   class DynamicModel < OpenStruct
     attr_reader :raw
 
-    def initialize(hash={})
-      raise ArgumentError, 'An hash is required as parameter' unless hash.is_a? Hash
-      @raw = hash
+    def initialize(options={})
+      check_args_type options
+
+      @raw = options
       @table = {}
       @hash_table = {}
 
-      hash.each do |k,v|
+      options.each do |k,v|
         key = k.to_s.underscore
         set_property key, v
-        new_ostruct_member(key)
+        new_ostruct_member!(key)
       end
     end
 
@@ -25,23 +26,23 @@ module Lol
       @hash_table
     end
 
-    def as_json opts={}
+    def as_json(opts = {})
       @table.as_json
     end
 
     protected
 
-    def class_for_property property
+    def class_for_property
       self.class
     end
 
     private
 
-    def date_key? key
+    def date_key?(key)
       key.match(/^(.+_)?(at|date)$/)
     end
 
-    def set_property key, v
+    def set_property(key, v)
       if date_key?(key) && v.is_a?(Integer)
         @table[key.to_sym] = @hash_table[key.to_sym] = value_to_date v
       else
@@ -50,18 +51,22 @@ module Lol
       end
     end
 
-    def value_to_date v
+    def value_to_date(v)
       Time.at(v / 1000)
     end
 
-    def convert_object obj, property:
+    def convert_object(obj, property:)
       if obj.is_a? Hash
-        class_for_property(property).new obj
+        class_for_property.new obj
       elsif obj.respond_to?(:map)
         obj.map { |o| convert_object o, property: property }
       else
         obj
       end
+    end
+
+    def check_args_type(hash)
+      raise ArgumentError, 'An hash is required as parameter' unless hash.is_a? Hash
     end
   end
 end

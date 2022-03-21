@@ -18,7 +18,7 @@ describe DynamicModel do
     end
 
     it 'and ignores casting when the value is not an integer' do
-      subject = DynamicModel.new attribute => 'foo bar'
+      subject = DynamicModel.new attribute: 'foo bar'
       expect(subject.send attribute).not_to be_a Time
     end
   end
