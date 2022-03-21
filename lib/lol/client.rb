@@ -10,7 +10,7 @@ module Lol
     # @option options [Fixnum] :rate_limit_requests number of requests
     # @option options [Fixnum] :rate_limit_seconds number of seconds to limit the rate in
     # @return [Lol::Client]
-    def initialize api_key, options = {}
+    def initialize(api_key, options = {})
       @api_key = api_key
       @region = options.delete(:region) || "br"
       set_up_cache(options.delete(:redis), options.delete(:ttl))
@@ -93,6 +93,31 @@ module Lol
       @tournament ||= TournamentRequest.new(api_key, region, cache_store, rate_limiter)
     end
 
+    # @return [Boolean] true if requests are automatically rate limited
+    def rate_limited?
+      @rate_limiter
+    end
+
+    # @return [Boolean] true if requests are cached
+    def cached?
+      @cached
+    end
+
+    # Returns an options hash with cache keys
+    # @return [Hash]
+    def cache_store
+      {
+        redis:  @redis,
+        ttl:    @ttl,
+        cached: @cached,
+      }
+    end
+
+    # @return [Redis] the cache store (if available)
+    def redis
+      @redis
+    end
+
     private
     def set_up_cache(redis_url, ttl)
       return @cached = false unless redis_url
@@ -107,31 +132,6 @@ module Lol
 
       @rate_limited = true
       @rate_limiter = GluttonRatelimit::AveragedThrottle.new number_of_requests, number_of_seconds
-    end
-
-    # Returns an options hash with cache keys
-    # @return [Hash]
-    def cache_store
-      {
-        redis:  @redis,
-        ttl:    @ttl,
-        cached: @cached,
-      }
-    end
-
-    # @return [Boolean] true if requests are automatically rate limited
-    def rate_limited?
-      @rate_limiter
-    end
-
-    # @return [Boolean] true if requests are cached
-    def cached?
-      @cached
-    end
-
-    # @return [Redis] the cache store (if available)
-    def redis
-      @redis
     end
   end
 end

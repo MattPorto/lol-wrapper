@@ -26,7 +26,7 @@ describe Client do
       let(:client) { Client.new "foo", redis: "redis://dummy-url" }
       let(:real_redis) { Client.new "foo", redis: "redis://localhost:6379" }
 
-      xit "sets caching if redis is specified in the options" do
+      it "sets caching if redis is specified in the options" do
         # ToDo: analyse this private method
         expect(client.cached?).to be_truthy
       end
@@ -44,7 +44,7 @@ describe Client do
         expect(real_redis.instance_variable_get(:@redis)).to be_a(Redis)
       end
 
-      xit "passes the redis_store to the request" do
+      it "passes the redis_store to the request" do
         # ToDo: analyse this private method
         champion_request = real_redis.champion
         expect(champion_request.cache_store).to eq(real_redis.cache_store)
@@ -54,8 +54,7 @@ describe Client do
     context "rate_limiting" do
       let(:client) { Client.new "foo", rate_limit_requests: 10 }
 
-      # ToDo: analyse this private method
-      xit "sets rate limiting if specified in the options" do
+      it "sets rate limiting if specified in the options" do
         expect(client.rate_limited?).to be_truthy
       end
 
@@ -70,8 +69,7 @@ describe Client do
     end
   end
 
-  xdescribe "#cached?" do
-    # ToDo: analyse this private method
+  describe "#cached?" do
     it "is true if @cached is true" do
       subject.instance_variable_set(:@cached, true)
       expect(subject.cached?).to be_truthy
