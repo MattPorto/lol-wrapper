@@ -7,8 +7,8 @@ module Lol
     # @option options [String] :region ("BR") The region on which the requests will be made
     # @option options [String] :redis the redis url to use for caching
     # @option options [Integer] :ttl (900) the cache ttl
-    # @option options [Fixnum] :rate_limit_requests number of requests
-    # @option options [Fixnum] :rate_limit_seconds number of seconds to limit the rate in
+    # @option options [Integer] :rate_limit_requests number of requests
+    # @option options [Integer] :rate_limit_seconds number of seconds to limit the rate in
     # @return [Lol::Client]
     def initialize api_key, options = {}
       @api_key = api_key
